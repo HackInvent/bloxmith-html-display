@@ -1,0 +1,29 @@
+.display-output-modal[data-html-display-modal-root] {
+  width: min(1440px, 96vw);
+  max-height: min(940px, 94vh);
+}
+
+.display-output-modal[data-html-display-modal-root] .display-output-modal-body {
+  max-height: min(780px, 78vh);
+}
+
+.display-output-modal[data-html-display-modal-root] .display-output-list {
+  min-height: min(520px, 58vh);
+}
+
+.display-output-modal[data-html-display-modal-root] .display-output-content {
+  max-height: min(640px, 62vh);
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+@media (max-width: 760px) {
+  .display-output-modal[data-html-display-modal-root] {
+    width: min(100%, 96vw);
+    max-height: 92vh;
+  }
+
+  .display-output-modal[data-html-display-modal-root] .modal-actions {
+    flex-wrap: wrap;
+  }
+}

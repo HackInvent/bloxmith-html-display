@@ -1,0 +1,33 @@
+{
+  "kind": "html_display",
+  "title": "Affichage HTML",
+  "ports": {
+    "inputs": [
+      {
+        "id": 1,
+        "name": "html",
+        "title": "HTML",
+        "accepts": [
+          "text/html",
+          "message/*",
+          "application/json"
+        ],
+        "multiplicity": "many",
+        "required": false,
+        "execution_requirement": "required_for_execution"
+      }
+    ],
+    "outputs": []
+  },
+  "config": {
+    "allow_scripts": false
+  },
+  "runtime": {
+    "initial_state": "waiting",
+    "runtime_executable": true,
+    "display_node": true,
+    "active_worker": true,
+    "centralized_executor": "generic",
+    "centralized_dependency_mode": "all_inputs"
+  }
+}
