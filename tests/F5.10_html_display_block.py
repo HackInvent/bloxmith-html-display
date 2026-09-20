@@ -82,7 +82,7 @@ def main() -> None:
         )
         inspector = str(rendered.get("html") or "")
         expect("allow" in inspector.lower() and "checked" in inspector, "The html_display inspector must preserve allow-scripts.")
-        expect("<script>" not in inspector and "&lt;script&gt;" in inspector, "L'inspecteur html_display doit afficher le HTML comme source échappée.")
+        expect("<script>" not in inspector and "&lt;script&gt;" in inspector, "The html_display inspector must show the HTML as escaped source.")
 
         modal = http_json(
             server.base_url,
@@ -104,12 +104,12 @@ def main() -> None:
         )
         modal_html = str(modal.get("html") or "")
         modal_assets = modal.get("assets") or []
-        expect("Hello HTML" in modal_html and "data-close-block-modal" in modal_html, "Le modal html_display doit être rendu par le bloc.")
-        expect('data-block-runtime-refresh="autonomous"' in modal_html, "Le modal html_display doit gérer son refresh runtime.")
-        expect("data-block-apply" in modal_html, "Le modal html_display doit exposer le bouton Appliquer.")
+        expect("Hello HTML" in modal_html and "data-close-block-modal" in modal_html, "The html_display modal must be rendered by the block.")
+        expect('data-block-runtime-refresh="autonomous"' in modal_html, "The html_display modal must own its runtime refresh.")
+        expect("data-block-apply" in modal_html, "The html_display modal must expose the Apply button.")
         expect("<script>" not in modal_html and "&lt;script&gt;" in modal_html, "The html_display modal must show the HTML as escaped source.")
-        expect("data-html-display-open-preview" in modal_html, "Le modal html_display doit proposer la visualisation HTML.")
-        expect("data-html-display-preview-source" in modal_html, "Le modal html_display doit exposer la source de preview.")
+        expect("data-html-display-open-preview" in modal_html, "The html_display modal must offer the HTML preview.")
+        expect("data-html-display-preview-source" in modal_html, "The html_display modal must expose the preview source.")
         document = graph_payload(
             "F5 HTML Display",
             [
@@ -128,10 +128,10 @@ def main() -> None:
             expect(result.get("content_type") == "text/html", f"html_display doit exposer text/html en {runtime_mode}.")
             expect("<img" in str(result.get("last_message") or ""), f"The received HTML does not contain the image in {runtime_mode}.")
             worker_received = str(run.get("worker_rows", {}).get("html-display-1", {}).get("received") or "")
-            expect("Hello HTML" in worker_received, f"Worker row HTML non alimentée en {runtime_mode}.")
-            expect(len(worker_received) < len(html), f"Worker row HTML doit rester une preview en {runtime_mode}.")
-            expect("_display_received_messages" not in result, f"html_display ne doit pas dupliquer les gros textes en metadata en {runtime_mode}.")
-            expect(result.get("display_received_count") == 1, f"html_display doit exposer un compteur de messages en {runtime_mode}.")
+            expect("Hello HTML" in worker_received, f"HTML worker row not filled in {runtime_mode}.")
+            expect(len(worker_received) < len(html), f"The HTML worker row must stay a preview in {runtime_mode}.")
+            expect("_display_received_messages" not in result, f"html_display must not duplicate large texts into metadata in {runtime_mode}.")
+            expect(result.get("display_received_count") == 1, f"html_display must expose a message counter in {runtime_mode}.")
     print("[ok] F5.10_html_display_block")
 
 

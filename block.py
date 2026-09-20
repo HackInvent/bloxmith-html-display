@@ -49,9 +49,9 @@ class HtmlDisplayBlock(BlockDefinition):
         accumulated_message = "\n\n".join(messages)
         node_id = str(getattr(context, "node_id", "") or self.kind)
         log = (
-            f"[html-display] {node_id}: {len(accumulated_message)} caractere(s) HTML recu(s)."
+            f"[html-display] {node_id}: {len(accumulated_message)} HTML character(s) received."
             if accumulated_message
-            else f"[html-display] {node_id}: aucune entree HTML recue."
+            else f"[html-display] {node_id}: no HTML input received."
         )
         return BlockRuntimeResult(
             status="success",
@@ -108,7 +108,7 @@ class HtmlDisplayBlock(BlockDefinition):
             template=(
                 template
                 .replace("{{ display_source }}", escape(self._display_source(node=node, payload=payload)))
-                .replace("{{ display_output }}", escape(str(display_output or "Aucune sortie disponible pour l'instant.")))
+                .replace("{{ display_output }}", escape(str(display_output or "No output available yet.")))
                 .replace("{{ allow_scripts_checked }}", "checked" if self._allow_scripts(node) else "")
             ),
             node={**node, "type": self.kind, "kind": self.kind},
@@ -236,7 +236,7 @@ class HtmlDisplayBlock(BlockDefinition):
         if isinstance(inputs, list) and inputs:
             return [
                 {
-                    "label": str(item.get("label") or "Entrée reçue"),
+                    "label": str(item.get("label") or "Received input"),
                     "target_label": str(item.get("target_label") or item.get("targetLabel") or node.get("title") or ""),
                     "content": str(item.get("content") or ""),
                 }
@@ -257,9 +257,9 @@ class HtmlDisplayBlock(BlockDefinition):
         """Return the modal summary sentence for the resolved output items."""
 
         if not items:
-            return "Aucun contenu HTML reçu pour ce bloc."
+            return "No HTML content received for this block."
         suffix = "s" if len(items) > 1 else ""
-        return f"{len(items)} contenu{suffix} HTML reçu{suffix}."
+        return f"{len(items)} HTML content{suffix} received."
 
     def _render_modal_items(self, items: list[dict[str, str]]) -> str:
         """Render HTML output cards for the modal body."""
