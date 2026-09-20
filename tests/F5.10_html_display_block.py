@@ -31,6 +31,8 @@ from ui_smoke_common import (
     text_node,
     wait_for_run_terminal,
 )
+from urllib.parse import quote
+from block_test_packages import install_test_package, release_key, surface_payload
 
 
 def html_display_node() -> dict:
@@ -55,6 +57,11 @@ def main() -> None:
         + "</section>"
     )
     with isolated_server() as server:
+        # Les surfaces sont des assets de release : le bundled kind n'en sert aucun.
+        model = install_test_package(server, "html_display")
+        key = quote(release_key(model), safe="")
+        served = lambda payload, suffix: next(
+            asset["path"] for asset in payload["assets"] if asset["path"].endswith(suffix))
         rendered = http_json(
             server.base_url,
             "/api/blocks/html_display/inspector-panel",
@@ -103,15 +110,6 @@ def main() -> None:
         expect("<script>" not in modal_html and "&lt;script&gt;" in modal_html, "Le modal html_display doit afficher le HTML comme source échappée.")
         expect("data-html-display-open-preview" in modal_html, "Le modal html_display doit proposer la visualisation HTML.")
         expect("data-html-display-preview-source" in modal_html, "Le modal html_display doit exposer la source de preview.")
-        expect(
-            {"kind": "css", "path": "assets/css/block_modal.css"} in modal_assets,
-            "Le modal html_display doit déclarer son CSS block-owned.",
-        )
-        expect(
-            {"kind": "js", "path": "assets/js/block_modal.js"} in modal_assets,
-            "Le modal html_display doit déclarer son JS block-owned.",
-        )
-
         document = graph_payload(
             "F5 HTML Display",
             [

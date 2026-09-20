@@ -33,16 +33,6 @@ class HtmlDisplayBlock(BlockDefinition):
     """Autonomous block implementation for `HtmlDisplayBlock`."""
     kind = "html_display"
 
-    def ui_assets(self, surface: str = "modal") -> list[dict[str, str]]:
-        """Return HTML Display-owned assets for the requested UI surface."""
-
-        if surface == "modal":
-            return [
-                {"kind": "css", "path": "assets/css/block_modal.css"},
-                {"kind": "js", "path": "assets/js/block_modal.js"},
-            ]
-        return []
-
     def execute_runtime(self, context: Any) -> BlockRuntimeResult:
         """Capture the received HTML payload as this sink block's runtime result.
 
