@@ -8,18 +8,18 @@
       <span class="node-type-pill">{{ script_mode }}</span>
       <button class="solid-btn" data-html-display-open-preview type="button" {{ preview_disabled }}>Visualiser HTML</button>
       <button class="ghost-btn" data-block-modal-copy="[data-block-modal-copy-source]" type="button">Copier</button>
-      <button class="ghost-btn" data-close-block-modal type="button">Fermer</button>
+      <button class="ghost-btn" data-close-block-modal type="button">Close</button>
     </div>
   </div>
   <div class="display-output-modal-body">
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Identité</span></div>
+      <div class="ports-editor-header"><span class="group-label">Identity</span></div>
       <div class="field-group">
-        <label>Nom du bloc</label>
+        <label>Block name</label>
         <input data-block-title-field type="text" autocomplete="off" value="{{ title }}" />
       </div>
       <div class="inspector-actions">
-        <button class="solid-btn" data-block-apply type="button" disabled>Appliquer</button>
+        <button class="solid-btn" data-block-apply type="button" disabled>Apply</button>
       </div>
     </section>
     <div class="display-output-summary">{{ summary }}</div>

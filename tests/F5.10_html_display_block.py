@@ -7,10 +7,10 @@
 # Created Date: 2024-02-26
 # -----------------------------------------------------------------------------
 
-"""F5.10 - Bloc Affichage HTML.
+"""F5.10 - HTML display block.
 
-Le test connecte une source texte contenant du HTML à `html_display` et vérifie
-que le bloc reçoit le HTML avec le content type attendu via son runtime autonome.
+The test wires a text source containing HTML to `html_display` and checks that
+the block receives it with the expected content type through its own runtime.
 """
 
 # Test cases:
@@ -57,7 +57,7 @@ def main() -> None:
         + "</section>"
     )
     with isolated_server() as server:
-        # Les surfaces sont des assets de release : le bundled kind n'en sert aucun.
+        # Surfaces are release assets: a bundled kind serves none of them.
         model = install_test_package(server, "html_display")
         key = quote(release_key(model), safe="")
         served = lambda payload, suffix: next(
@@ -81,7 +81,7 @@ def main() -> None:
             },
         )
         inspector = str(rendered.get("html") or "")
-        expect("allow" in inspector.lower() and "checked" in inspector, "L'inspecteur html_display doit préserver allow-scripts.")
+        expect("allow" in inspector.lower() and "checked" in inspector, "The html_display inspector must preserve allow-scripts.")
         expect("<script>" not in inspector and "&lt;script&gt;" in inspector, "L'inspecteur html_display doit afficher le HTML comme source échappée.")
 
         modal = http_json(
@@ -107,7 +107,7 @@ def main() -> None:
         expect("Hello HTML" in modal_html and "data-close-block-modal" in modal_html, "Le modal html_display doit être rendu par le bloc.")
         expect('data-block-runtime-refresh="autonomous"' in modal_html, "Le modal html_display doit gérer son refresh runtime.")
         expect("data-block-apply" in modal_html, "Le modal html_display doit exposer le bouton Appliquer.")
-        expect("<script>" not in modal_html and "&lt;script&gt;" in modal_html, "Le modal html_display doit afficher le HTML comme source échappée.")
+        expect("<script>" not in modal_html and "&lt;script&gt;" in modal_html, "The html_display modal must show the HTML as escaped source.")
         expect("data-html-display-open-preview" in modal_html, "Le modal html_display doit proposer la visualisation HTML.")
         expect("data-html-display-preview-source" in modal_html, "Le modal html_display doit exposer la source de preview.")
         document = graph_payload(
@@ -122,11 +122,11 @@ def main() -> None:
             created = create_run_api(server, document, runtime_mode=runtime_mode)
             run = wait_for_run_terminal(server, str(created.get("run_id") or ""))
 
-            expect(run.get("status") == "success", f"Le run html_display doit réussir en {runtime_mode}.")
+            expect(run.get("status") == "success", f"The html_display run must succeed in {runtime_mode}.")
             result = run.get("results", {}).get("html-display-1", {})
-            expect("virtual_display" not in result, f"html_display ne doit pas utiliser virtual_display en {runtime_mode}.")
+            expect("virtual_display" not in result, f"html_display must not use virtual_display in {runtime_mode}.")
             expect(result.get("content_type") == "text/html", f"html_display doit exposer text/html en {runtime_mode}.")
-            expect("<img" in str(result.get("last_message") or ""), f"Le HTML reçu ne contient pas l'image en {runtime_mode}.")
+            expect("<img" in str(result.get("last_message") or ""), f"The received HTML does not contain the image in {runtime_mode}.")
             worker_received = str(run.get("worker_rows", {}).get("html-display-1", {}).get("received") or "")
             expect("Hello HTML" in worker_received, f"Worker row HTML non alimentée en {runtime_mode}.")
             expect(len(worker_received) < len(html), f"Worker row HTML doit rester une preview en {runtime_mode}.")

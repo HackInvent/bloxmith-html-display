@@ -250,7 +250,7 @@ class HtmlDisplayBlock(BlockDefinition):
 
         output = str(node.get("output") or "")
         if output:
-            return [{"label": "Sortie reçue", "target_label": str(node.get("title") or ""), "content": output}]
+            return [{"label": "Output received", "target_label": str(node.get("title") or ""), "content": output}]
         return []
 
     def _modal_summary(self, items: list[dict[str, str]]) -> str:
@@ -265,7 +265,7 @@ class HtmlDisplayBlock(BlockDefinition):
         """Render HTML output cards for the modal body."""
 
         if not items:
-            return '<div class="ports-editor-empty">Lance le workflow ou charge un run pour voir le contenu complet.</div>'
+            return '<div class="ports-editor-empty">Run the workflow or load a run to see the full content.</div>'
         cards: list[str] = []
         for index, item in enumerate(items):
             label = escape(item.get("label") or f"Source {index + 1}")

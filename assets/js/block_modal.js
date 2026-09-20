@@ -52,7 +52,7 @@ function openPreview(root, api) {
   const opened = window.open(url, "_blank", "noopener");
   window.setTimeout(() => URL.revokeObjectURL(url), 30000);
   if (!opened) {
-    api.log?.("[html-display] Ouverture du rendu HTML bloquee par le navigateur.");
+    api.log?.("[html-display] The browser blocked the HTML preview window.");
   }
 }
 
