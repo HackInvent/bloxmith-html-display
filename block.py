@@ -86,7 +86,7 @@ class HtmlDisplayBlock(BlockDefinition):
             replacements={
                 "title": node.get("title") or self.default_title(),
                 "preview": self._truncate(str(display_output or "En attente de HTML"), 60),
-                "mode": "scripts on" if self._allow_scripts(node) else "scripts off",
+                "mode": self._script_mode_text(node),
                 # The card states one of two texts, so the marker carries the matching key.
                 "mode_key": ("block.html_display.scripts_on" if self._allow_scripts(node)
                              else "block.html_display.scripts_off"),
@@ -141,7 +141,7 @@ class HtmlDisplayBlock(BlockDefinition):
             .replace("{{ items_html }}", self._render_modal_items(items))
             .replace("{{ clipboard_text }}", escape(self._modal_clipboard_text(items)))
             .replace("{{ preview_html }}", escape(self._modal_preview_html(items)))
-            .replace("{{ script_mode }}", "scripts on" if self._allow_scripts(node) else "scripts off")
+            .replace("{{ script_mode }}", escape(self._script_mode_text(node)))
             .replace("{{ script_mode_marker }}",
                      ' data-i18n="block.html_display.scripts_on"' if self._allow_scripts(node)
                      else ' data-i18n="block.html_display.scripts_off"')
@@ -262,6 +262,38 @@ class HtmlDisplayBlock(BlockDefinition):
                      "target_label": str(node.get("title") or ""), "content": output}]
         return []
 
+    def _item_label(self, item: dict[str, str], index: int) -> str:
+        """Return the header label of one item, translated only when the block authored it.
+
+        A label the runtime delivered is content and stays as received; a default one
+        is a block text and follows the active language.
+
+        Args:
+            item: Resolved item carrying its content and, for a default label, its key.
+            index: Position of the item in the modal, used by the generated label.
+        """
+
+        if item.get("label_key"):
+            return self.translate(str(item["label_key"]), fallback=str(item.get("label") or ""))
+        if item.get("label"):
+            return str(item["label"])
+        return self.translate(
+            "block.html_display.source_index",
+            {"index": index + 1},
+            fallback=f"Source {index + 1}",
+        )
+
+    def _script_mode_text(self, node: dict[str, Any]) -> str:
+        """Return the script-mode label of the node in the active interface language.
+
+        Args:
+            node: Serialized HTML Display node carrying the allow_scripts setting.
+        """
+
+        if self._allow_scripts(node):
+            return self.translate("block.html_display.scripts_on", fallback="scripts on")
+        return self.translate("block.html_display.scripts_off", fallback="scripts off")
+
     def _summary_marker(self, items: list[dict[str, str]]) -> str:
         """Return the i18n marker of the summary sentence, which changes with the item count.
 
@@ -281,19 +313,27 @@ class HtmlDisplayBlock(BlockDefinition):
         """Return the modal summary sentence for the resolved output items."""
 
         if not items:
-            return "No HTML content received for this block."
+            return self.translate(
+                "block.html_display.no_content",
+                fallback="No HTML content received for this block.",
+            )
         suffix = "s" if len(items) > 1 else ""
-        return f"{len(items)} HTML content{suffix} received."
+        return self.translate(
+            "block.html_display.contents_summary",
+            {"count": len(items)},
+            fallback=f"{len(items)} HTML content{suffix} received.",
+        )
 
     def _render_modal_items(self, items: list[dict[str, str]]) -> str:
         """Render HTML output cards for the modal body."""
 
         if not items:
-            return ('<div class="ports-editor-empty" data-i18n="block.html_display.run_to_see">'
-                    "Run the workflow or load a run to see the full content.</div>")
+            empty = self.translate("block.html_display.run_to_see", fallback="Run the workflow or load a run to see the full content.")
+            return (f'<div class="ports-editor-empty" data-i18n="block.html_display.run_to_see">'
+                    f"{escape(empty)}</div>")
         cards: list[str] = []
         for index, item in enumerate(items):
-            label = escape(item.get("label") or f"Source {index + 1}")
+            label = escape(self._item_label(item, index))
             # A label the runtime provided is content; a default one is a block text.
             if item.get("label_key"):
                 marker = f' data-i18n="{item["label_key"]}"'
