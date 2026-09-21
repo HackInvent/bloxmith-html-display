@@ -1,0 +1,20 @@
+{
+  "block.html_display.model.title": "HTML viewer",
+  "block.html_display.pill": "HTML",
+  "block.html_display.modal_kicker": "HTML rendering",
+  "block.html_display.open_preview": "Open the HTML",
+  "block.html_display.copy": "Copy",
+  "block.html_display.scripts_on": "scripts on",
+  "block.html_display.scripts_off": "scripts off",
+  "block.html_display.sources_label": "Sources",
+  "block.html_display.captured_label": "Captured content",
+  "block.html_display.allow_scripts_label": "Allow JavaScript execution in the HTML rendering",
+  "block.html_display.escaped_hint": "The captured HTML is shown as escaped source in this panel and in the block modal.",
+  "block.html_display.no_content": "No HTML content received for this block.",
+  "block.html_display.contents_summary.one": "{count} HTML content received.",
+  "block.html_display.contents_summary.other": "{count} HTML contents received.",
+  "block.html_display.received_input": "Received input",
+  "block.html_display.output_received": "Output received",
+  "block.html_display.source_index": "Source {index}",
+  "block.html_display.run_to_see": "Run the workflow or load a run to see the full content."
+}

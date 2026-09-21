@@ -87,6 +87,9 @@ class HtmlDisplayBlock(BlockDefinition):
                 "title": node.get("title") or self.default_title(),
                 "preview": self._truncate(str(display_output or "En attente de HTML"), 60),
                 "mode": "scripts on" if self._allow_scripts(node) else "scripts off",
+                # The card states one of two texts, so the marker carries the matching key.
+                "mode_key": ("block.html_display.scripts_on" if self._allow_scripts(node)
+                             else "block.html_display.scripts_off"),
             },
         )
 
@@ -134,10 +137,14 @@ class HtmlDisplayBlock(BlockDefinition):
         html = (
             template.replace("{{ title }}", escape(str(node.get("title") or self.default_title())))
             .replace("{{ summary }}", escape(self._modal_summary(items)))
+            .replace("{{ summary_marker }}", self._summary_marker(items))
             .replace("{{ items_html }}", self._render_modal_items(items))
             .replace("{{ clipboard_text }}", escape(self._modal_clipboard_text(items)))
             .replace("{{ preview_html }}", escape(self._modal_preview_html(items)))
             .replace("{{ script_mode }}", "scripts on" if self._allow_scripts(node) else "scripts off")
+            .replace("{{ script_mode_marker }}",
+                     ' data-i18n="block.html_display.scripts_on"' if self._allow_scripts(node)
+                     else ' data-i18n="block.html_display.scripts_off"')
             .replace("{{ allow_scripts }}", "true" if self._allow_scripts(node) else "false")
             .replace("{{ preview_disabled }}", "" if items else "disabled")
         )
@@ -237,6 +244,7 @@ class HtmlDisplayBlock(BlockDefinition):
             return [
                 {
                     "label": str(item.get("label") or "Received input"),
+                    "label_key": "" if item.get("label") else "block.html_display.received_input",
                     "target_label": str(item.get("target_label") or item.get("targetLabel") or node.get("title") or ""),
                     "content": str(item.get("content") or ""),
                 }
@@ -250,8 +258,24 @@ class HtmlDisplayBlock(BlockDefinition):
 
         output = str(node.get("output") or "")
         if output:
-            return [{"label": "Output received", "target_label": str(node.get("title") or ""), "content": output}]
+            return [{"label": "Output received", "label_key": "block.html_display.output_received",
+                     "target_label": str(node.get("title") or ""), "content": output}]
         return []
+
+    def _summary_marker(self, items: list[dict[str, str]]) -> str:
+        """Return the i18n marker of the summary sentence, which changes with the item count.
+
+        An empty modal states that nothing arrived; a filled one counts the contents,
+        so the two sentences are distinct texts rather than one plural form.
+
+        Args:
+            items: HTML values resolved for this modal.
+        """
+
+        if not items:
+            return ' data-i18n="block.html_display.no_content"'
+        return (' data-i18n="block.html_display.contents_summary"'
+                f' data-i18n-params=\'{{"count": {len(items)}}}\'')
 
     def _modal_summary(self, items: list[dict[str, str]]) -> str:
         """Return the modal summary sentence for the resolved output items."""
@@ -265,16 +289,25 @@ class HtmlDisplayBlock(BlockDefinition):
         """Render HTML output cards for the modal body."""
 
         if not items:
-            return '<div class="ports-editor-empty">Run the workflow or load a run to see the full content.</div>'
+            return ('<div class="ports-editor-empty" data-i18n="block.html_display.run_to_see">'
+                    "Run the workflow or load a run to see the full content.</div>")
         cards: list[str] = []
         for index, item in enumerate(items):
             label = escape(item.get("label") or f"Source {index + 1}")
+            # A label the runtime provided is content; a default one is a block text.
+            if item.get("label_key"):
+                marker = f' data-i18n="{item["label_key"]}"'
+            elif item.get("label"):
+                marker = ""
+            else:
+                marker = (' data-i18n="block.html_display.source_index"'
+                          f' data-i18n-params=\'{{"index": {index + 1}}}\'')
             target = escape(item.get("target_label") or "")
             content = escape(item.get("content") or "")
             cards.append(
                 '<article class="display-output-card">'
                 '<div class="display-output-card-header">'
-                f"<span>{label}</span>"
+                f"<span{marker}>{label}</span>"
                 f"<span>{target}</span>"
                 "</div>"
                 f'<pre class="display-output-content">{content}</pre>'

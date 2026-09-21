@@ -1,28 +1,28 @@
 <div class="modal-panel display-output-modal" role="dialog" aria-modal="true" aria-labelledby="htmlDisplayBlockModalTitle" data-html-display-modal-root data-block-runtime-refresh="autonomous" data-html-display-allow-scripts="{{ allow_scripts }}">
   <div class="modal-header">
     <div>
-      <span class="panel-kicker">Affichage HTML</span>
+      <span class="panel-kicker" data-i18n="block.html_display.modal_kicker">HTML rendering</span>
       <h2 id="htmlDisplayBlockModalTitle">{{ title }}</h2>
     </div>
     <div class="modal-actions">
-      <span class="node-type-pill">{{ script_mode }}</span>
-      <button class="solid-btn" data-html-display-open-preview type="button" {{ preview_disabled }}>Visualiser HTML</button>
-      <button class="ghost-btn" data-block-modal-copy="[data-block-modal-copy-source]" type="button">Copier</button>
-      <button class="ghost-btn" data-close-block-modal type="button">Close</button>
+      <span class="node-type-pill"{{ script_mode_marker }}>{{ script_mode }}</span>
+      <button class="solid-btn" data-html-display-open-preview type="button" {{ preview_disabled }} data-i18n="block.html_display.open_preview">Open the HTML</button>
+      <button class="ghost-btn" data-block-modal-copy="[data-block-modal-copy-source]" type="button" data-i18n="block.html_display.copy">Copy</button>
+      <button class="ghost-btn" data-close-block-modal type="button" data-i18n="ui.block_kit.close">Close</button>
     </div>
   </div>
   <div class="display-output-modal-body">
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Identity</span></div>
+      <div class="ports-editor-header"><span class="group-label" data-i18n="ui.block_kit.identity">Identity</span></div>
       <div class="field-group">
-        <label>Block name</label>
+        <label data-i18n="ui.block_kit.block_name">Block name</label>
         <input data-block-title-field type="text" autocomplete="off" value="{{ title }}" />
       </div>
       <div class="inspector-actions">
-        <button class="solid-btn" data-block-apply type="button" disabled>Apply</button>
+        <button class="solid-btn" data-block-apply type="button" disabled data-i18n="ui.block_kit.apply">Apply</button>
       </div>
     </section>
-    <div class="display-output-summary">{{ summary }}</div>
+    <div class="display-output-summary"{{ summary_marker }}>{{ summary }}</div>
     <div class="display-output-list">{{ items_html }}</div>
     <textarea hidden readonly data-html-display-preview-source>{{ preview_html }}</textarea>
     <textarea hidden readonly data-block-modal-copy-source>{{ clipboard_text }}</textarea>
