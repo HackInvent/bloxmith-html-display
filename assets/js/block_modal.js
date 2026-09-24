@@ -1,3 +1,5 @@
+import { withProperties } from "./properties.js";
+
 /**
  * Read the HTML payload currently displayed by the modal preview source.
  *
@@ -62,7 +64,7 @@ function openPreview(root, api) {
  * @param {HTMLElement} root - Mounted HTML Display modal root.
  * @param {object} api - Generic block UI API.
  */
-export function mount(root, api) {
+function mountOwned(root, api) {
   root.addEventListener("click", (event) => {
     const button = event.target.closest("[data-html-display-open-preview]");
     if (!button) {
@@ -71,4 +73,9 @@ export function mount(root, api) {
     event.preventDefault();
     openPreview(root, api || {});
   });
+}
+
+/** Keep the block behavior and add properties-only accessibility. */
+export function mount(root, ...args) {
+  return withProperties(mountOwned).call(this, root, ...args);
 }
