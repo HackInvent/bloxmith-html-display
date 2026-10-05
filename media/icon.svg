@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+     stroke-linejoin="round" role="img" aria-label="HTML viewer">
+  <title>HTML viewer</title>
+  <rect x="3" y="5" width="18" height="14" rx="2.5"/>
+  <path d="M3 9.4h18"/>
+  <path d="m9.6 12.4-1.8 1.8 1.8 1.8M14.4 12.4l1.8 1.8-1.8 1.8"/>
+</svg>
